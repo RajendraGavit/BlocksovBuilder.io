@@ -1,0 +1,35 @@
+{
+  "name": "@udsp/shared",
+  "version": "1.0.0",
+  "description": "Shared types and utilities for UDSP platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "lint": "eslint src/**/*.ts --fix",
+    "test": "jest"
+  },
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "jsonwebtoken": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.1",
+    "@types/node": "^18.15.0",
+    "typescript": "^5.0.2"
+  },
+  "keywords": [
+    "udsp",
+    "types",
+    "shared",
+    "blockchain",
+    "identity"
+  ],
+  "author": "UDSP Team",
+  "license": "MIT"
+}
