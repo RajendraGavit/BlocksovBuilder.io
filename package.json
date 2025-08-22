@@ -1,13 +1,94 @@
 {
-  "name": "code",
+  "name": "udsp-platform",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Universal Digital Sovereignty Platform - Production-grade blockchain identity management",
+  "private": true,
+  "workspaces": [
+    "services/*",
+    "frontend",
+    "shared"
+  ],
   "scripts": {
-    "start": "node index.js",
-    "dev": "node index.js"
+    "dev": "docker-compose up --build",
+    "dev:detached": "docker-compose up -d --build",
+    "stop": "docker-compose down",
+    "clean": "docker-compose down -v --remove-orphans",
+    "logs": "docker-compose logs -f",
+    "install:all": "npm install && npm run install:services && npm run install:frontend",
+    "install:services": "npm install --prefix services/api-gateway && npm install --prefix services/identity-service && npm install --prefix services/auth-service && npm install --prefix services/credential-service && npm install --prefix services/blockchain-adapter",
+    "install:frontend": "npm install --prefix frontend",
+    "test": "npm run test:services && npm run test:frontend",
+    "test:services": "cd services && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "build": "npm run build:services && npm run build:frontend",
+    "build:services": "npm run build --prefix services/api-gateway && npm run build --prefix services/identity-service && npm run build --prefix services/auth-service && npm run build --prefix services/credential-service && npm run build --prefix services/blockchain-adapter",
+    "build:frontend": "npm run build --prefix frontend",
+    "lint": "npm run lint:services && npm run lint:frontend",
+    "lint:services": "eslint services/*/src/**/*.ts --fix",
+    "lint:frontend": "eslint frontend/src/**/*.{ts,tsx} --fix",
+    "deploy:local": "docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d",
+    "deploy:staging": "docker-compose -f docker-compose.yml -f docker-compose.staging.yml up -d",
+    "deploy:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d",
+    "health": "curl -f http://localhost:8080/health || exit 1",
+    "db:migrate": "npm run db:migrate --prefix services/identity-service",
+    "db:seed": "npm run db:seed --prefix services/identity-service",
+    "contracts:compile": "cd contracts && npx hardhat compile",
+    "contracts:deploy": "cd contracts && npx hardhat run scripts/deploy.js",
+    "contracts:test": "cd contracts && npx hardhat test"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "devDependencies": {
+    "@types/node": "^18.15.0",
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
+    "@typescript-eslint/parser": "^5.57.0",
+    "eslint": "^8.37.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.7",
+    "typescript": "^5.0.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.0",
+    "concurrently": "^7.6.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/udsp-platform.git"
+  },
+  "keywords": [
+    "blockchain",
+    "identity",
+    "decentralized",
+    "self-sovereign",
+    "credentials",
+    "microservices",
+    "ethereum",
+    "polygon",
+    "solana",
+    "zero-knowledge",
+    "privacy"
+  ],
+  "author": "UDSP Team",
+  "license": "MIT",
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm test"
+    }
+  }
 }
